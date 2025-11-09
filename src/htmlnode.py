@@ -24,7 +24,7 @@ class HTMLNode():
 
 
 class LeafNode(HTMLNode):
-    def __init__(self, tag: str = None, value: str = None, 
+    def __init__(self, tag: str, value: str,
                  children: Optional[List[HTMLNode]] = None, 
                  props: Optional[Dict[str, str]] = None)-> LeafNode:
 
@@ -35,11 +35,32 @@ class LeafNode(HTMLNode):
         if (self.children is not None):
             raise ValueError("A LeafNode node should have no children: children parameter should be None")
         
-    def to_html(self):
+    def to_html(self)-> str:
         if (self.tag is None):
             return self.value 
-        html_start_tag = f"<{self.tag}{self.props_to_html()}>"
-        html_end_tag   = f"</{self.tag}>"
+        html_start_tag: str = f"<{self.tag}{self.props_to_html()}>"
+        html_end_tag: str   = f"</{self.tag}>"
         return f"{html_start_tag}{self.value}{html_end_tag}"
 
 
+class ParentNode(HTMLNode):
+    def __init__(self, tag: str, children: Optional[List[HTMLNode]] = None, 
+                 value: str = None, props: Optional[Dict[str, str]] = None)-> ParentNode:
+        super().__init__(tag, value, children, props)
+
+        if (self.value is not None):
+            raise ValueError("A ParentNode should not have value member: value = None")
+        if (self.tag is None or self.children is None):
+            raise ValueError("A ParentNode necessarily needs to have tag and children members")
+
+    def to_html(self)-> str:
+        start_tag: str = f"<{self.tag}>"
+        end_tag: str   = f"</{self.tag}>"
+
+        html_content_list: List[str] = []
+
+        for child in self.children:
+            html_content_list.append(child.to_html())
+        html_content = "".join(html_content_list)
+
+        return f"{start_tag}{html_content}{end_tag}"

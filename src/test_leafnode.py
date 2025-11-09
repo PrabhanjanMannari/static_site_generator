@@ -5,8 +5,7 @@ from htmlnode import HTMLNode, LeafNode
 class TestLeafNode(unittest.TestCase):
     
     def test_wrong_args(self):
-        self.assertRaises(ValueError, LeafNode)
-        self.assertRaises(ValueError, LeafNode, {"children" : [HTMLNode(), HTMLNode()]})
+        self.assertRaises(ValueError, LeafNode, None, "value", {"children" : [HTMLNode(), HTMLNode()]})
 
     def test_to_html(self):
         tag: str              = "p"
@@ -15,17 +14,17 @@ class TestLeafNode(unittest.TestCase):
         prop_val: str         = "https://www.google.com"
         props: Dict[str, str] = {prop_key : prop_val}
 
-        tagged_output = f"<{tag}>{value}</{tag}>"
-        props_output  = f'<{tag} {prop_key}="{prop_val}">{value}</{tag}>'
+        tagged_output: str = f"<{tag}>{value}</{tag}>"
+        props_output: str  = f'<{tag} {prop_key}="{prop_val}">{value}</{tag}>'
 
 
-        leaf_node = LeafNode(value = value)
+        leaf_node: LeafNode = LeafNode(tag = None, value = value)
         self.assertEqual(leaf_node.to_html(), value)
 
-        leaf_node = LeafNode(tag = tag, value = value)
+        leaf_node: LeafNode = LeafNode(tag = tag, value = value)
         self.assertEqual(leaf_node.to_html(), tagged_output)
 
-        leaf_node = LeafNode(tag = tag, value = value, props = props)
+        leaf_node: LeafNode = LeafNode(tag = tag, value = value, props = props)
         self.assertEqual(leaf_node.to_html(), props_output)
 
 if __name__ == "__main__":
