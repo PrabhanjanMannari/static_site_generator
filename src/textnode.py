@@ -1,14 +1,27 @@
 from __future__ import annotations 
 from enum import Enum
 from dataclasses import dataclass
+from typing import Optional
 
 class TextType(Enum):
-    TEXT   = "text"
-    BOLD   = "bold text"
-    ITALIC = "italic text"
-    CODE   = "code text"
-    LINK   = "link"
-    IMAGE  = "image"
+    UNKNOWN = "UNKNOWN"
+    TEXT    = "TEXT"
+    BOLD    = "BOLD"
+    ITALIC  = "ITALIC"
+    CODE    = "CODE"
+    LINK    = "LINK"
+    IMAGE   = "IMAGE"
+
+    def tag(self)-> str:
+        text_type_to_tag: Dict[TextType, Optional[str]] = {
+            TextType.TEXT   : None,
+            TextType.BOLD   : "b",
+            TextType.ITALIC : "i",
+            TextType.CODE   : "code",
+            TextType.LINK   : "a",
+            TextType.IMAGE  : "img",
+        }
+        return text_type_to_tag[self]
 
 @dataclass
 class TextNode():
@@ -20,5 +33,8 @@ class TextNode():
         return (self.text == other.text) and (self.text_type == other.text_type) and (self.url == other.url)
 
     def __repr__(self)-> str:
-        return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
+        if (self.url is None):
+            return f"TextNode('{self.text}', {self.text_type.value})"
+        else:
+            return f"TextNode('{self.text}', {self.text_type.value}, {self.url})"
 
