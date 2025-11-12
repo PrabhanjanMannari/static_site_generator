@@ -5,9 +5,9 @@ from conversions import *
 class TestImageLinkExtraction(unittest.TestCase):
     def test_image(self):
         matches = extract_markdown_images(
-            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
+            "This is text with an ![$image](https://i.imgur.com/zjjcJKZ.png)"
         )
-        self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+        self.assertListEqual([("$image", "https://i.imgur.com/zjjcJKZ.png")], matches)
 
     def test_link(self):
         matches = extract_markdown_links(
@@ -29,5 +29,4 @@ class TestImageLinkExtraction(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
 
