@@ -12,7 +12,7 @@ class TestLeafNode(unittest.TestCase):
         value: str            = "This is a value"
         prop_key: str         = "href"
         prop_val: str         = "https://www.google.com"
-        props: Dict[str, str] = {prop_key : prop_val}
+        props: dict[str, str] = {prop_key : prop_val}
 
         tagged_output: str = f"<{tag}>{value}</{tag}>"
         props_output: str  = f'<{tag} {prop_key}="{prop_val}">{value}</{tag}>'

@@ -13,7 +13,7 @@ class TextType(Enum):
     IMAGE   = "IMAGE"
 
     def tag(self)-> str:
-        text_type_to_tag: Dict[TextType, Optional[str]] = {
+        text_type_to_tag: dict[TextType, Optional[str]] = {
             TextType.TEXT   : None,
             TextType.BOLD   : "b",
             TextType.ITALIC : "i",

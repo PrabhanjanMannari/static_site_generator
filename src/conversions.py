@@ -44,10 +44,54 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
     return new_nodes
 
 def extract_markdown_images(text: str)->list[tuple[str]]:
-    image_regex = r"!\[(.*?)]\((.*?)\)"
+    image_regex: str = r"!\[(.*?)]\((.*?)\)"
     return re.findall(image_regex, text)
 
 def extract_markdown_links(text: str)->list[tuple[str]]:
-    link_regex = f"(?<!!)\[(.*?)\]\((.*?)\)"
+    link_regex: str = f"(?<!!)\[(.*?)\]\((.*?)\)"
     return re.findall(link_regex, text)
+
+def split_nodes_image(old_nodes: list[TextNode])-> list[TextNode]:
+    image_regex: str = r"!\[(.*?)]\((.*?)\)"
+    new_nodes: list[TextNode] = []
+    for node in old_nodes:
+        if (node.text_type == TextType.TEXT):
+            node_list: list[TextNode] = []
+            parsedTill: int = 0
+
+            for match in re.finditer(image_regex, node.text):
+                if (match.start() > parsedTill):
+                    text_part: str = node.text[parsedTill : match.start()]
+                    node_list.append(TextNode(text_part, TextType.TEXT))
+
+                node_list.append(TextNode(match.group(1), TextType.IMAGE, match.group(2)))
+                parsedTill = match.end()
+
+            new_nodes.extend(node_list)
+        else: 
+            new_nodes.append(node)
+
+    return new_nodes
+
+def split_nodes_link(old_nodes: list[TextNode])-> list[TextNode]:
+    link_regex: str = f"(?<!!)\[(.*?)\]\((.*?)\)"
+    new_nodes: list[TextNode] = []
+    for node in old_nodes:
+        if (node.text_type == TextType.TEXT):
+            node_list: list[TextNode] = []
+            parsedTill: int = 0
+
+            for match in re.finditer(link_regex, node.text):
+                if (match.start() > parsedTill):
+                    text_part: str = node.text[parsedTill : match.start()]
+                    node_list.append(TextNode(text_part, TextType.TEXT))
+
+                node_list.append(TextNode(match.group(1), TextType.LINK, match.group(2)))
+                parsedTill = match.end()
+
+            new_nodes.extend(node_list)
+        else: 
+            new_nodes.append(node)
+
+    return new_nodes
 
