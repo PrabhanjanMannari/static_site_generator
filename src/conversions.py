@@ -67,6 +67,9 @@ def split_nodes_image(old_nodes: list[TextNode])-> list[TextNode]:
                 node_list.append(TextNode(match.group(1), TextType.IMAGE, match.group(2)))
                 parsedTill = match.end()
 
+            if (parsedTill < len(node.text)):
+                node_list.append(TextNode(node.text[parsedTill:]))
+
             new_nodes.extend(node_list)
         else: 
             new_nodes.append(node)
@@ -89,9 +92,24 @@ def split_nodes_link(old_nodes: list[TextNode])-> list[TextNode]:
                 node_list.append(TextNode(match.group(1), TextType.LINK, match.group(2)))
                 parsedTill = match.end()
 
+            if (parsedTill < len(node.text)):
+                node_list.append(TextNode(node.text[parsedTill:]))
+
             new_nodes.extend(node_list)
         else: 
             new_nodes.append(node)
 
+
     return new_nodes
 
+def text_to_textnodes(text: str)-> list[TextNode]:
+    node_list: list[TextNode] = [TextNode(text)]
+    
+    node_list = split_nodes_delimiter(node_list, "**", TextType.BOLD)
+    node_list = split_nodes_delimiter(node_list, "_", TextType.ITALIC)
+    node_list = split_nodes_delimiter(node_list, "`", TextType.CODE)
+
+    node_list = split_nodes_image(node_list)
+    node_list = split_nodes_link(node_list)
+
+    return node_list
