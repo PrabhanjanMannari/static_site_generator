@@ -9,17 +9,23 @@ class TextType(Enum):
     BOLD    = "BOLD"
     ITALIC  = "ITALIC"
     CODE    = "CODE"
+    ULIST   = "ULIST"
+    OLIST   = "OLIST"
+    LIST_EL = "LIST_EL"
     LINK    = "LINK"
     IMAGE   = "IMAGE"
 
     def tag(self)-> str:
         text_type_to_tag: dict[TextType, Optional[str]] = {
-            TextType.TEXT   : None,
-            TextType.BOLD   : "b",
-            TextType.ITALIC : "i",
-            TextType.CODE   : "code",
-            TextType.LINK   : "a",
-            TextType.IMAGE  : "img",
+            TextType.TEXT    : None,
+            TextType.BOLD    : "b",
+            TextType.ITALIC  : "i",
+            TextType.CODE    : "code",
+            TextType.ULIST   : "ul",
+            TextType.OLIST   : "ol",
+            TextType.LIST_EL : "li",
+            TextType.LINK    : "a",
+            TextType.IMAGE   : "img",
         }
         return text_type_to_tag[self]
 

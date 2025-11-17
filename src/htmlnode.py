@@ -40,6 +40,8 @@ class LeafNode(HTMLNode):
             return self.value 
         html_start_tag: str = f"<{self.tag}{self.props_to_html()}>"
         html_end_tag: str   = f"</{self.tag}>"
+        if (self.tag == "img"):
+            html_end_tag = ""
         return f"{html_start_tag}{self.value}{html_end_tag}"
 
 
@@ -56,6 +58,8 @@ class ParentNode(HTMLNode):
     def to_html(self)-> str:
         start_tag: str = f"<{self.tag}>"
         end_tag: str   = f"</{self.tag}>"
+        if (self.tag == "img"):
+            end_tag = ""
 
         html_content_list: list[str] = []
 

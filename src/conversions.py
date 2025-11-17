@@ -1,11 +1,21 @@
+from enum import Enum
+
 import re 
 
 from textnode import *
 from htmlnode import *
 
-def text_node_to_html_node(text_node: TextNode)-> HTMLNode:
+class BlockType(Enum):
+    PARAGRAPH      = "PARAGRAPH"
+    HEADING        = "HEADING"
+    CODE           = "CODE"
+    QUOTE          = "QUOTE"
+    UNORDERED_LIST = "UNORDERED_LIST"
+    ORDERED_LIST   = "ORDERED_LIST"
+
+def text_node_to_html_node(text_node: TextNode)-> LeafNode:
     tag: str   = text_node.text_type.tag()
-    value: str  = text_node.text
+    value: str = text_node.text
     props: str = None
     if (text_node.text_type == TextType.UNKNOWN):
         raise TypeError("text_node has unknown text_type")
@@ -99,7 +109,6 @@ def split_nodes_link(old_nodes: list[TextNode])-> list[TextNode]:
         else: 
             new_nodes.append(node)
 
-
     return new_nodes
 
 def text_to_textnodes(text: str)-> list[TextNode]:
@@ -113,3 +122,59 @@ def text_to_textnodes(text: str)-> list[TextNode]:
     node_list = split_nodes_link(node_list)
 
     return node_list
+
+def markdown_to_blocks(markdown: str)-> list[str]:
+    blocks: list[str] = []
+    preprocessed_markdown: list[str] = [block.strip("\n").strip() for block in markdown.split("\n\n")]
+    for block in preprocessed_markdown:
+        if (len(block) == 0):
+            continue 
+        blocks.append(block)
+    return blocks 
+
+def block_to_block_type(block: str)-> BlockType:
+    # heading check 
+    if (block[0] == "#"):
+        idx = 1
+        header_len = min(len(block), 6)
+        while (idx < header_len):
+            if (block[idx] != "#"):
+                break 
+            idx += 1
+        if (idx < len(block) and block[idx] == " "):
+            return BlockType.HEADING
+
+    # code check 
+    if (len(block) >= 6 and block[:3] == "```" and block[-3:] == "```"): 
+        return BlockType.CODE
+
+    lines = block.split("\n")
+
+    # quote check 
+    isQuote: bool = True 
+    for line in lines:
+        if (line[0] != ">"):
+            isQuote = False 
+            break 
+    if (isQuote):
+        return BlockType.QUOTE
+
+    # unordered list check 
+    isUnorderedList: bool = True 
+    for line in lines:
+        if (len(line) < 2 or line[:2] != "- "):
+            isUnorderedList = False 
+            break 
+    if (isUnorderedList):
+        return BlockType.UNORDERED_LIST
+
+    # ordered list check 
+    isOrderedList: bool = True 
+    for num, line in enumerate(lines):
+        if (len(line) < 3 or line[:3] != f"{num + 1}. "):
+            isOrderedList = False 
+            break 
+    if (isOrderedList):
+        return BlockType.ORDERED_LIST
+
+    return BlockType.PARAGRAPH
