@@ -7,6 +7,6 @@ if (len(sys.argv) >= 2):
     base_path = sys.argv[1]
 
 refresh_util("static/", "docs/")
-generate_pages_recursive("content/", "template.html", "docs/", base_path)
+generate_pages_recursive("content/", "template.html", "docs/", f"{base_path}docs/")
 
 
