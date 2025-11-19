@@ -20,9 +20,12 @@ def markdown_to_html_node(markdown: str)-> ParentNode:
         children: list[HTMLNode] = text_to_children(block, block_type)
         match(block_type):
             case(BlockType.HEADING):
-                parent_node: ParentNode = ParentNode(tag = "h", children = children)
+                numH = 0
+                while (block[numH] == "#"):
+                    numH += 1
+                parent_node: ParentNode = ParentNode(tag = f"h{numH}", children = children)
             case(BlockType.QUOTE):
-                parent_node: ParentNode = ParentNode(tag = "q", children = children)
+                parent_node: ParentNode = ParentNode(tag = "blockquote", children = children)
             case(BlockType.UNORDERED_LIST):
                 parent_node: ParentNode = ParentNode(tag = "ul", children = children)
             case(BlockType.ORDERED_LIST):

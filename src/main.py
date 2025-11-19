@@ -1,4 +1,6 @@
-from textnode import *
+from utils import * 
 
-node = TextNode("This is dummy text", TextType.LINK, "https://boot.dev")
-print(node)
+refresh_util("static/", "public/")
+generate_pages_recursive("content/", "template.html", "public/")
+
+
