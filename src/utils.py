@@ -29,7 +29,11 @@ def extract_title(markdown)-> str:
             return line.lstrip("# ").strip()
     raise ValueError("Unable to find the title field")
 
-def generate_page(from_path: str = "content/index.md", template_path: str = "template.html", dest_path: str = "public/index.html")-> None:
+def generate_page(from_path: str = "content/index.md", 
+                  template_path: str = "template.html", 
+                  dest_path: str = "public/index.html", 
+                  base_path: str = "/")-> None:
+
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path, "r") as f:
@@ -41,12 +45,15 @@ def generate_page(from_path: str = "content/index.md", template_path: str = "tem
     title: str    = extract_title(markdown)
     
     total_html: str = template.replace("{{ Title }}", title)
-    total_html = total_html.replace("{{ Content }}", gen_html)
+    total_html      = total_html.replace("{{ Content }}", gen_html)
+
+    total_html.replace('href="/', f'href="{base_path}')
+    total_html.replace('src="/', f'src="{base_path}')
 
     with open(dest_path, "w") as f:
         f.write(total_html)
 
-def generate_pages_recursive(dir_path_content: str, template_path: str, dest_dir_path: str)-> None:
+def generate_pages_recursive(dir_path_content: str, template_path: str, dest_dir_path: str, base_path: str = "/")-> None:
     for file in os.listdir(dir_path_content):
         file_path: str = os.path.join(dir_path_content, file)
         if (os.path.isfile(file_path)):
